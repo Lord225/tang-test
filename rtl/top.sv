@@ -1,5 +1,28 @@
 `timescale 1ns / 1ps
 
+module btn_edge (
+    input  logic clk,
+    input  logic btn,
+    output logic tick
+);
+    logic btn_prev;
+    logic btn_curr;
+
+    always_ff @(posedge clk) begin
+        btn_curr <= btn;
+        btn_prev <= btn_curr;
+    end
+
+    always_comb begin
+        if ({btn_prev, btn_curr} == 2'b01) begin
+            tick = 1;
+        end else begin
+            tick = 0;
+        end
+    end
+endmodule
+
+
 /**
  * # Top-Level LED Counter
  *
@@ -24,38 +47,29 @@ module top (
     output logic [5:0] led
 );
     logic reset;
-    logic led_enable;
+    logic led_counter_enable;
     (* maybe_unused *)
-    logic led_tick;
-    logic btn2_prev;
-    logic btn2_curr;
-    logic [5:0] neg_led;
+    logic led_counter_tick;
+    logic [5:0] led_count;
 
     counter #(
-        .COUNTER_MAX  (64),
-        .COUNTER_WIDTH(6)
+        .COUNTER_MAX(64)
     ) led_counter (
         .clk(clk),
-        .enable(led_enable),
+        .enable(led_counter_enable),
         .reset(reset),
-        .tick(led_tick),
-        .count(neg_led)
+        .tick(led_counter_tick),
+        .count(led_count)
     );
 
-    always_ff @(posedge clk) begin
-        btn2_curr <= btn2;
-        btn2_prev <= btn2_curr;
-    end
+    btn_edge btn_edge (
+        .clk (clk),
+        .btn (btn2),
+        .tick(led_counter_enable)
+    );
 
     always_comb begin
         reset = btn1;
-
-        if ({btn2_prev, btn2_curr} == 2'b01) begin
-            led_enable = 1;
-        end else begin
-            led_enable = 0;
-        end
-
-        led = ~neg_led;
+        led   = ~led_count;
     end
 endmodule
