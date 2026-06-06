@@ -3,6 +3,7 @@
 ```sh
 just test
 just wave
+just visualize
 just
 just program
 just flash

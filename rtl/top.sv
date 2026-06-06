@@ -17,43 +17,45 @@
  * - `btn1`, `btn2`: Active-high reset buttons.
  * - `led`: Six-bit LED counter output.
  */
-module top #(
-    parameter int unsigned CLOCK_HZ = 4_000_000
-) (
+module top (
     input logic clk,
     input logic btn1,
     input logic btn2,
     output logic [5:0] led
 );
-    localparam int unsigned HALF_PEROID_CYCLES = CLOCK_HZ / 2;
-    localparam int unsigned COUNTER_WIDTH = $clog2(HALF_PEROID_CYCLES);
-    localparam logic [COUNTER_WIDTH-1:0]HALF_PERIOD_TERMINAL = COUNTER_WIDTH'(HALF_PEROID_CYCLES - 1);
-
-    logic [COUNTER_WIDTH-1:0] counter = '0;
     logic reset;
+    logic led_enable;
+    (* maybe_unused *)
+    logic led_tick;
+    logic btn2_prev;
+    logic btn2_curr;
+    logic [5:0] neg_led;
 
-    logic [COUNTER_WIDTH-1:0] next_counter;
-    logic [5:0] next_led;
+    counter #(
+        .COUNTER_MAX  (64),
+        .COUNTER_WIDTH(6)
+    ) led_counter (
+        .clk(clk),
+        .enable(led_enable),
+        .reset(reset),
+        .tick(led_tick),
+        .count(neg_led)
+    );
 
-    always_ff @(posedge clk, posedge reset) begin
-        if (reset) begin
-            counter <= '0;
-            led <= 6'b0;
-        end else begin
-            counter <= next_counter;
-            led <= next_led;
-        end
+    always_ff @(posedge clk) begin
+        btn2_curr <= btn2;
+        btn2_prev <= btn2_curr;
     end
 
     always_comb begin
-        reset = btn1 || btn2;
+        reset = btn1;
 
-        if (counter == HALF_PERIOD_TERMINAL) begin
-            next_counter = '0;
-            next_led = led + 1;
+        if ({btn2_prev, btn2_curr} == 2'b01) begin
+            led_enable = 1;
         end else begin
-            next_counter = counter + 1;
-            next_led = led;
+            led_enable = 0;
         end
+
+        led = ~neg_led;
     end
 endmodule

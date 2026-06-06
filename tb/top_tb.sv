@@ -6,9 +6,7 @@ module top_tb;
     logic btn1;
     logic btn2;
 
-    top #(
-        .CLOCK_HZ(8)
-    ) dut (
+    top dut (
         .clk (clk),
         .led (led),
         .btn1(btn1),
@@ -22,6 +20,8 @@ module top_tb;
         $dumpvars(0, top_tb);
 
         clk = 1'b0;
+        btn1 = 1'b0;
+        btn2 = 1'b0;
 
         repeat (2) @(posedge clk);
         assert (led == 6'd0);
