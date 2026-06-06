@@ -1,0 +1,25 @@
+{
+  "files.associations": {
+    "*.sv": "systemverilog",
+    "*.svh": "systemverilog",
+    "*.v": "verilog",
+    "*.cst": "plaintext"
+  },
+  "cSpell.enabled": false,
+  "lushay.OssCadSuite.path": "/Users/lord225/oss-cad-suite",
+  "lushay.Build.toolchain": "open-source",
+  "commandLineTestAdapter.discoveryCommand": "${workspaceFolder}/scripts/discover-tests.zsh",
+  "commandLineTestAdapter.watch": [
+    "rtl/**/*.sv",
+    "tb/**/*.sv",
+    "justfile"
+  ],
+    "[verilog]": {
+      "editor.defaultFormatter": "mshr-h.VerilogHDL"
+    },
+    "[systemverilog]": {
+      "editor.defaultFormatter": "mshr-h.VerilogHDL"
+    },
+    "editor.formatOnSave": true,
+    "verilog.formatting.veribleVerilogFormatter.path": "/opt/homebrew/bin/verible-verilog-format"
+}
