@@ -1,16 +1,16 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
 module top_tb;
     logic clk;
-    logic led;
+    logic [5:0] led;
     logic btn1;
     logic btn2;
 
     top #(
-        .ClockHz(8)
+        .CLOCK_HZ(8)
     ) dut (
-        .clk(clk),
-        .led(led),
+        .clk (clk),
+        .led (led),
         .btn1(btn1),
         .btn2(btn2)
     );
@@ -24,13 +24,13 @@ module top_tb;
         clk = 1'b0;
 
         repeat (2) @(posedge clk);
-        assert (led == 1'b0);
+        assert (led == 6'd0);
 
         repeat (4) @(posedge clk);
-        assert (led == 1'b1);
+        assert (led == 6'd1);
 
         repeat (4) @(posedge clk);
-        assert (led == 1'b0);
+        assert (led == 6'd1);
 
         repeat (4) @(posedge clk);
 
@@ -38,7 +38,7 @@ module top_tb;
         btn2 = '1;
 
         repeat (1) @(posedge clk);
-        assert (led == 1'b0);
+        assert (led == 6'b0);
 
         $finish;
     end

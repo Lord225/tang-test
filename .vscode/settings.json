@@ -6,20 +6,38 @@
     "*.cst": "plaintext"
   },
   "cSpell.enabled": false,
-  "lushay.OssCadSuite.path": "/Users/lord225/oss-cad-suite",
-  "lushay.Build.toolchain": "open-source",
-  "commandLineTestAdapter.discoveryCommand": "${workspaceFolder}/scripts/discover-tests.zsh",
-  "commandLineTestAdapter.watch": [
-    "rtl/**/*.sv",
-    "tb/**/*.sv",
-    "justfile"
-  ],
-    "[verilog]": {
-      "editor.defaultFormatter": "mshr-h.VerilogHDL"
+  "terminal.integrated.profiles.osx": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": [
+        "-l",
+        "-c",
+        "source /Users/lord225/oss-cad-suite/environment && exec /bin/zsh -i"
+      ]
+    }
+  },
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.profiles.linux": {
+    "zsh": {
+      "path": "/bin/zsh",
+      "args": [
+        "-l",
+        "-c",
+        "source /Users/lord225/oss-cad-suite/environment && exec /bin/zsh -i"
+      ]
     },
-    "[systemverilog]": {
-      "editor.defaultFormatter": "mshr-h.VerilogHDL"
-    },
-    "editor.formatOnSave": true,
-    "verilog.formatting.veribleVerilogFormatter.path": "/opt/homebrew/bin/verible-verilog-format"
+    "bash": {
+      "path": "/bin/bash",
+      "args": [
+        "-l",
+        "-c",
+        "source /Users/lord225/oss-cad-suite/environment && exec /bin/bash -i"
+      ]
+    }
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh",
+
+  "editor.formatOnSave": true,
+  "verilog.formatting.veribleVerilogFormatter.path": "/opt/homebrew/bin/verible-verilog-format",
+  "verilog.formatting.veribleVerilogFormatter.arguments": "--indentation_spaces=4"
 }

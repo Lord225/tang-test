@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "Hudson-River-Trading.vscode-slang",
-    "lushay-labs.lushay-code",
     "jvcdk-at-github.vscode-commandline-test-adapter"
   ]
 }
