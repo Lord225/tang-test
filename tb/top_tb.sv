@@ -30,7 +30,7 @@ module top_tb;
         assert (led == 6'd1);
 
         repeat (4) @(posedge clk);
-        assert (led == 6'd1);
+        assert (led == 6'd2);
 
         repeat (4) @(posedge clk);
 

@@ -18,7 +18,7 @@
  * - `led`: Six-bit LED counter output.
  */
 module top #(
-    parameter int unsigned CLOCK_HZ = 150_000
+    parameter int unsigned CLOCK_HZ = 4_000_000
 ) (
     input logic clk,
     input logic btn1,
