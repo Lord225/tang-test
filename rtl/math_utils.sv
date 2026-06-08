@@ -14,7 +14,7 @@ function automatic logic [15:0] saturating_add(input logic [15:0] a, input logic
 
     localparam logic [15:0] A_MAX = '1;
 
-    temp = a + b;
+    temp = {1'b0, a} + {1'b0, b};
 
     if (temp > {1'b0, A_MAX}) begin
         return A_MAX;
@@ -24,5 +24,23 @@ function automatic logic [15:0] saturating_add(input logic [15:0] a, input logic
 endfunction
 
 
+typedef struct packed {
+    logic [15:0] result;
+    logic        overflow;
+} overflowingadd_result_t;
 
+
+function automatic overflowingadd_result_t overflowing_add(input logic [15:0] a,
+                                                           input logic [15:0] b);
+    logic [16:0] temp;
+    overflowingadd_result_t result;
+
+    localparam logic [15:0] A_MAX = '1;
+
+    temp = {1'b0, a} + {1'b0, b};
+
+    result.result = temp[15:0];
+    result.overflow = (temp > {1'b0, A_MAX});
+    return result;
+endfunction
 

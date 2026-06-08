@@ -9,6 +9,14 @@ from cocotb_tools.runner import get_runner
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RTL_DIR = PROJECT_ROOT / "rtl"
 SIM_BUILD = PROJECT_ROOT / "build" / "sim" / "math_utils"
+CASES = [
+    (0x0000, 0x0000),
+    (0x0001, 0x0002),
+    (0x1234, 0x4321),
+    (0xFFFF, 0x0001),
+    (0x8000, 0x8000),
+    (0xFFFF, 0xFFFF),
+]
 
 
 def _u16(value: int) -> int:
@@ -20,24 +28,37 @@ def _sat_u16_add(a: int, b: int) -> int:
     return min(total, 0xFFFF)
 
 
+def _overflow_flag(a: int, b: int) -> bool:
+    total = a + b
+    return total > 0xFFFF
+
+
+async def _drive_inputs(dut, a: int, b: int):
+    dut.a.value = a
+    dut.b.value = b
+    await Timer(1, unit="ns")
+
+
 @cocotb.test()
-async def add_wraps_and_saturating_add_clamps(dut):
-    cases = [
-        (0x0000, 0x0000),
-        (0x0001, 0x0002),
-        (0x1234, 0x4321),
-        (0xFFFF, 0x0001),
-        (0x8000, 0x8000),
-        (0xFFFF, 0xFFFF),
-    ]
-
-    for a, b in cases:
-        dut.a.value = a
-        dut.b.value = b
-        await Timer(1, unit="ns")
-
+async def add_wraps(dut):
+    for a, b in CASES:
+        await _drive_inputs(dut, a, b)
         assert int(dut.sum.value) == _u16(a + b)
+
+
+@cocotb.test()
+async def saturating_add_clamps(dut):
+    for a, b in CASES:
+        await _drive_inputs(dut, a, b)
         assert int(dut.sat_sum.value) == _sat_u16_add(a, b)
+
+
+@cocotb.test()
+async def overflowing_add_reports_wrapped_result_and_overflow(dut):
+    for a, b in CASES:
+        await _drive_inputs(dut, a, b)
+        assert bool(dut.overflow_sum_overflow.value) == _overflow_flag(a, b)
+        assert int(dut.overflow_sum_result.value) == _u16(a + b)
 
 
 def test_math_utils_runner():
