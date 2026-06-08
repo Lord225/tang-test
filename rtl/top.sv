@@ -41,31 +41,31 @@ endmodule
  * - `led`: Six-bit LED counter output.
  */
 module top (
-    input logic clk,
-    input logic btn1,
-    input logic btn2,
+    input  logic       clk,
+    input  logic       btn1,
+    input  logic       btn2,
     output logic [5:0] led
 );
-    logic reset;
-    logic led_counter_enable;
+    logic       reset;
+    logic       led_counter_enable;
     (* maybe_unused *)
-    logic led_counter_tick;
+    logic       led_counter_tick;
     logic [5:0] led_count;
-
-    counter #(
-        .COUNTER_MAX(64)
-    ) led_counter (
-        .clk(clk),
-        .enable(led_counter_enable),
-        .reset(reset),
-        .tick(led_counter_tick),
-        .count(led_count)
-    );
 
     btn_edge btn_edge (
         .clk (clk),
         .btn (btn2),
         .tick(led_counter_enable)
+    );
+
+    counter #(
+        .COUNTER_MAX(64)
+    ) led_counter (
+        .clk   (clk),
+        .enable(led_counter_enable),
+        .reset (reset),
+        .tick  (led_counter_tick),
+        .count (led_count)
     );
 
     always_comb begin
