@@ -16,7 +16,7 @@ module fixedpoint_dut #(
 );
     fixedpoint #(
         .FRAC_BITS(FRAC_BITS)
-    ) fixed ();
+    ) fixedi8f8 ();
 
     fixedpoint_t fixed_a;
     fixedpoint_t fixed_b;
@@ -30,11 +30,11 @@ module fixedpoint_dut #(
         fixed_a.raw           = a;
         fixed_b.raw           = b;
 
-        fixed_sum             = fixed.add(fixed_a, fixed_b);
-        fixed_sat_sum         = fixed.saturating_add(fixed_a, fixed_b);
-        fixed_product         = fixed.mul(fixed_a, fixed_b);
-        fixed_sat_product     = fixed.saturating_mul(fixed_a, fixed_b);
-        fixed_overflow_sum    = fixed.overflowing_add(fixed_a, fixed_b);
+        fixed_sum             = fixedi8f8.add(fixed_a, fixed_b);
+        fixed_sat_sum         = fixedi8f8.saturating_add(fixed_a, fixed_b);
+        fixed_product         = fixedi8f8.mul(fixed_a, fixed_b);
+        fixed_sat_product     = fixedi8f8.saturating_mul(fixed_a, fixed_b);
+        fixed_overflow_sum    = fixedi8f8.overflowing_add(fixed_a, fixed_b);
 
         sum                   = fixed_sum.raw;
         sat_sum               = fixed_sat_sum.raw;
