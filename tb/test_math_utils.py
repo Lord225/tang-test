@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 import cocotb
+import pytest
 from cocotb.triggers import Timer
 from cocotb_tools.runner import get_runner
 
@@ -47,21 +48,22 @@ async def add_wraps(dut):
 
 
 @cocotb.test()
-async def saturating_add_clamps(dut):
+async def saturating_add(dut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sat_sum.value) == _sat_u16_add(a, b)
 
 
 @cocotb.test()
-async def overflowing_add_reports_wrapped_result_and_overflow(dut):
+async def overflowing_add(dut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert bool(dut.overflow_sum_overflow.value) == _overflow_flag(a, b)
         assert int(dut.overflow_sum_result.value) == _u16(a + b)
 
 
-def test_math_utils_runner():
+@pytest.fixture(scope="module")
+def math_utils_runner():
     sim = os.getenv("SIM", "verilator")
     runner = get_runner(sim)
 
@@ -73,8 +75,25 @@ def test_math_utils_runner():
         always=True,
     )
 
+    return runner
+
+
+def _run_cocotb_test(runner, testcase: str):
     runner.test(
         hdl_toplevel="math_utils_dut",
         test_module=__name__,
         build_dir=SIM_BUILD,
+        testcase=testcase,
     )
+
+
+def test_add_wraps(math_utils_runner):
+    _run_cocotb_test(math_utils_runner, "add_wraps")
+
+
+def test_saturating_add(math_utils_runner):
+    _run_cocotb_test(math_utils_runner, "saturating_add")
+
+
+def test_overflowing_add(math_utils_runner):
+    _run_cocotb_test(math_utils_runner, "overflowing_add")
