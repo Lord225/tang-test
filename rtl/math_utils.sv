@@ -1,9 +1,3 @@
-
-
-
-
-
-
 function automatic logic [15:0] add(input logic [15:0] a, input logic [15:0] b);
     return a + b;
 endfunction
@@ -43,4 +37,3 @@ function automatic overflowingadd_result_t overflowing_add(input logic [15:0] a,
     result.overflow = (temp > {1'b0, A_MAX});
     return result;
 endfunction
-

@@ -3,12 +3,12 @@
 `include "math_utils.sv"
 
 module math_utils_dut (
-    input logic [15:0] a,
-    input logic [15:0] b,
+    input  logic [15:0] a,
+    input  logic [15:0] b,
     output logic [15:0] sum,
     output logic [15:0] sat_sum,
     output logic [15:0] overflow_sum_result,
-    output logic overflow_sum_overflow
+    output logic        overflow_sum_overflow
 );
     overflowingadd_result_t overflow_sum;
 
