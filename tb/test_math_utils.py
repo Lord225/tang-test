@@ -5,19 +5,14 @@ import cocotb
 import pytest
 from cocotb.triggers import Timer
 from cocotb_tools.runner import get_runner
-
+import itertools
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RTL_DIR = PROJECT_ROOT / "rtl"
 SIM_BUILD = PROJECT_ROOT / "build" / "sim" / "math_utils"
-CASES = [
-    (0x0000, 0x0000),
-    (0x0001, 0x0002),
-    (0x1234, 0x4321),
-    (0xFFFF, 0x0001),
-    (0x8000, 0x8000),
-    (0xFFFF, 0xFFFF),
-]
+CASES = list(itertools.product(range(0, 0x10000, 0x1000), repeat=2))
+
+WAVES = bool(os.getenv("WAVES"))
 
 
 def _u16(value: int) -> int:
@@ -84,6 +79,7 @@ def _run_cocotb_test(runner, testcase: str):
         test_module=__name__,
         build_dir=SIM_BUILD,
         testcase=testcase,
+        waves=WAVES,
     )
 
 

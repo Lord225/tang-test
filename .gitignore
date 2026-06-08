@@ -7,3 +7,4 @@ obj_dir/
 waves/
 ___module_export.json
 ___tempbuild_*.vlt
+__pycache__/
