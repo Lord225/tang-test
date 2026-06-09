@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import shutil
 import sys
 
 from cocotb_tools.runner import get_runner
@@ -21,15 +22,20 @@ def _run_stubgen(
     build_dir: Path,
     stub_filename: str,
     parameters: dict[str, int] | None = None,
+    build_args: list[str] | None = None,
 ) -> None:
     sim = os.getenv("SIM", "verilator")
     runner = get_runner(sim)
+
+    if build_dir.exists():
+        shutil.rmtree(build_dir)
 
     runner.build(
         sources=sources,
         includes=[RTL_DIR],
         hdl_toplevel=hdl_toplevel,
         parameters=parameters or {},
+        build_args=build_args or [],
         build_dir=build_dir,
         always=True,
     )
@@ -65,6 +71,14 @@ def main() -> None:
         sources=[RTL_DIR / "top.sv"],
         build_dir=SIM_BUILD / "top",
         stub_filename="top.pyi",
+    )
+    _run_stubgen(
+        hdl_toplevel="stack",
+        sources=[RTL_DIR / "stack.sv"],
+        build_dir=SIM_BUILD / "stack",
+        stub_filename="stack.pyi",
+        parameters={"DEPTH": 16, "WIDTH": 8},
+        build_args=["-Wno-WIDTHTRUNC", "-Wno-WIDTHEXPAND"],
     )
 
 
