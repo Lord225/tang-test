@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 from pathlib import Path
 import os
+from typing import TYPE_CHECKING
 
 import cocotb
 import pytest
 from cocotb.triggers import Timer
 from cocotb_tools.runner import get_runner
 import itertools
+
+if TYPE_CHECKING:
+    from tb.copra_stubs.math_utils_dut import MathUtilsDut
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RTL_DIR = PROJECT_ROOT / "rtl"
@@ -29,28 +35,28 @@ def _overflow_flag(a: int, b: int) -> bool:
     return total > 0xFFFF
 
 
-async def _drive_inputs(dut, a: int, b: int):
+async def _drive_inputs(dut: MathUtilsDut, a: int, b: int):
     dut.a.value = a
     dut.b.value = b
     await Timer(1, unit="ns")
 
 
 @cocotb.test()
-async def add_wraps(dut):
+async def add_wraps(dut: MathUtilsDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sum.value) == _u16(a + b)
 
 
 @cocotb.test()
-async def saturating_add(dut):
+async def saturating_add(dut: MathUtilsDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sat_sum.value) == _sat_u16_add(a, b)
 
 
 @cocotb.test()
-async def overflowing_add(dut):
+async def overflowing_add(dut: MathUtilsDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert bool(dut.overflow_sum_overflow.value) == _overflow_flag(a, b)

@@ -14,17 +14,6 @@ interface fixedpoint #(
     localparam int unsigned INT_BITS = TOTAL_BITS - FRAC_BITS;
 
 
-    function automatic fixedpoint_t from_real(input real value);
-        fixedpoint_t out;
-        real scale;
-        int scaled;
-
-        scale   = real'(1 << FRAC_BITS);
-        scaled  = $rtoi(value * scale);
-        out.raw = TOTAL_BITS'($unsigned(scaled));
-        return out;
-    endfunction
-
     function automatic fixedpoint_t from_int(input int unsigned value);
         fixedpoint_t out;
         int unsigned scaled;

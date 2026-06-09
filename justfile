@@ -9,6 +9,9 @@ default:
 test:
     uv run pytest -q
 
+dut-types:
+    uv run python tools/generate_dut_types.py
+
 visualize:
     python3 tools/visualize_pnr.py
     echo "Visualization written to build/top_visualization.html"

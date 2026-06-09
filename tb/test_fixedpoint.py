@@ -1,10 +1,16 @@
+from __future__ import annotations
+
 from pathlib import Path
 import os
+from typing import TYPE_CHECKING
 
 import cocotb
 import pytest
 from cocotb.triggers import Timer
 from cocotb_tools.runner import get_runner
+
+if TYPE_CHECKING:
+    from tb.copra_stubs.fixedpoint_dut import FixedpointDut
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -51,28 +57,28 @@ def _fixed_saturating_mul(a: int, b: int) -> int:
     return _saturate((a * b) >> FRAC_BITS)
 
 
-async def _drive_inputs(dut, a: int, b: int):
+async def _drive_inputs(dut: FixedpointDut, a: int, b: int):
     dut.a.value = a
     dut.b.value = b
     await Timer(1, unit="ns")
 
 
 @cocotb.test()
-async def fixedpoint_add_wraps(dut):
+async def fixedpoint_add_wraps(dut: FixedpointDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sum.value) == _mask(a + b)
 
 
 @cocotb.test()
-async def fixedpoint_saturating_add_clamps(dut):
+async def fixedpoint_saturating_add_clamps(dut: FixedpointDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sat_sum.value) == _saturate(a + b)
 
 
 @cocotb.test()
-async def fixedpoint_overflowing_add_reports_result_and_overflow(dut):
+async def fixedpoint_overflowing_add_reports_result_and_overflow(dut: FixedpointDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.overflow_sum_result.value) == _mask(a + b)
@@ -80,14 +86,14 @@ async def fixedpoint_overflowing_add_reports_result_and_overflow(dut):
 
 
 @cocotb.test()
-async def fixedpoint_mul_scales_product(dut):
+async def fixedpoint_mul_scales_product(dut: FixedpointDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.product.value) == _fixed_mul(a, b)
 
 
 @cocotb.test()
-async def fixedpoint_saturating_mul_clamps(dut):
+async def fixedpoint_saturating_mul_clamps(dut: FixedpointDut):
     for a, b in CASES:
         await _drive_inputs(dut, a, b)
         assert int(dut.sat_product.value) == _fixed_saturating_mul(a, b)
